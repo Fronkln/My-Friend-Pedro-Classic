@@ -308,6 +308,9 @@ public class RootSharedScript : MonoBehaviour
 
     public virtual float GetBestScoreForLevel(int lvlNr, bool checkUserID)
     {
+        if (MFPClassic.Hook.devMode)
+            return 0;
+
         float num1 = 0.0f;
         for (float num2 = new float(); (double)num2 <= 2.0; ++num2)
         {
@@ -464,6 +467,10 @@ public class RootSharedScript : MonoBehaviour
     public virtual string GetLeaderboardName(int lvlNr, string idCheck, bool givePlain)
     {
         string lhs;
+
+        if (MFPClassic.Hook.devMode)
+            return "DEVBUILD";
+
         switch (lvlNr)
         {
             case 2:
@@ -481,7 +488,7 @@ public class RootSharedScript : MonoBehaviour
             case 6:
                 lhs = "mfpclassic-5";
                 break;
-            case 7:
+            case 8:
                 lhs = "mfpclassic-6";
                 break;
 

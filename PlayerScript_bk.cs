@@ -122,7 +122,6 @@ public class PlayerScript : MonoBehaviour
     public bool kDodge;
     private bool kDodgeDown;
     private bool kPunch;
-    public bool kPunchPublic { get { return kPunch; } }
     public bool floatJump;
     private float jumpCoolDown;
     private bool rolling;
@@ -871,8 +870,7 @@ public class PlayerScript : MonoBehaviour
             this.blackBarBottom.SetActive(false);
             this.uiWeaponSelectorScript.prepareUI();
             this.changeWeapon((float)this.weapon);
-            //  this.health = Mathf.Clamp01(this.health + (this.root.difficultyMode != 2 ? 0.3f : 0.5f));
-            this.health = Mathf.Clamp01(this.health + 0.5f);
+            this.health = Mathf.Clamp01(this.health + (this.root.difficultyMode != 2 ? 0.3f : 0.5f));
             this.root.slowMotionAmount = Mathf.Clamp01(this.root.slowMotionAmount + 0.5f);
         }
         else
@@ -993,15 +991,6 @@ public class PlayerScript : MonoBehaviour
         this.uziR = this.handR.Find("uzi");
         this.uziL = this.handL.Find("uzi");
         this.machineGun = this.handR.Find("machinegun");
-
-        GameObject m4 = Instantiate(MFPClassic.MFPClassicAssets.m4Gun);
-        m4.transform.parent = machineGun.transform.parent;
-        m4.transform.position = machineGun.transform.position;
-        m4.transform.rotation = machineGun.transform.rotation;
-
-        Destroy(machineGun.gameObject);
-        machineGun = m4.transform;
-
         this.shotgun = this.handR.Find("shotgun");
         this.turretGun = this.handR.Find("turret_gun");
         this.turretGunTop = this.turretGun.Find("Turret_Gun_Pipe/BulletPoint");
@@ -1163,24 +1152,18 @@ public class PlayerScript : MonoBehaviour
         Color color2 = this.secondaryCursorImage.color = color1;
         this.aimHelper.gameObject.SetActive(false);
         this.uiWeaponSelectorScript = (UIWeaponSelectorScript)GameObject.Find("HUD/Canvas/WeaponSelector").GetComponent(typeof(UIWeaponSelectorScript));
-
-
-        MFPClassic.MFPClassicAssets.healthBar2HUD = healthBar2HUD;
-
-        int num14 = 450;
-        Vector2 sizeDelta = ((RectTransform)MFPClassic.MFPClassicAssets.healthBar2HUD.transform.parent.parent.GetComponent(typeof(RectTransform))).sizeDelta;
-        float num15 = sizeDelta.x = (float)num14;
-        Vector2 vector7 = ((RectTransform)MFPClassic.MFPClassicAssets.healthBar2HUD.transform.parent.parent.GetComponent(typeof(RectTransform))).sizeDelta = sizeDelta;
-        healthBar1HUD.transform.parent.gameObject.SetActive(false);
-        healthBar3HUD.transform.parent.gameObject.SetActive(false);
-
+        if (this.root.difficultyMode == 2)
+        {
+            int num7 = 450;
+            Vector2 sizeDelta = ((RectTransform)this.healthBar2HUD.transform.parent.parent.GetComponent(typeof(RectTransform))).sizeDelta;
+            double num8 = (double)(sizeDelta.x = (float)num7);
+            Vector2 vector2_4 = ((RectTransform)this.healthBar2HUD.transform.parent.parent.GetComponent(typeof(RectTransform))).sizeDelta = sizeDelta;
+            this.healthBar1HUD.transform.parent.gameObject.SetActive(false);
+            this.healthBar3HUD.transform.parent.gameObject.SetActive(false);
+        }
         this.healthBarStartColour = this.healthBar1HUD.color;
         this.fireLightR = (Light)this.handR.Find("FireLight").GetComponent(typeof(Light));
         this.fireLightL = (Light)this.handL.Find("FireLight").GetComponent(typeof(Light));
-
-        fireLightR.renderMode = LightRenderMode.ForcePixel;
-        fireLightL.renderMode = LightRenderMode.ForcePixel;
-
         this.layerMask = (LayerMask)33652992;
         this.layerMask2 = (LayerMask)33620224;
         this.layerMaskIncEnemies = (LayerMask)33654016;
@@ -2642,8 +2625,8 @@ public class PlayerScript : MonoBehaviour
             this.recoverTimer = Mathf.Clamp01(this.recoverTimer + 0.01f * this.timescale);
         if (!this.isEnemy)
         {
-            //if (this.root.difficultyMode == 0 || this.root.difficultyMode == 1)
-            //  this.health = (double)this.health <= 0.660000026226044 ? ((double)this.health <= 0.330000013113022 ? Mathf.Clamp(this.health + 1f / 1000f * this.timescale * this.recoverTimer, 0.0f, 0.33f) : Mathf.Clamp(this.health + 1f / 1000f * this.timescale * this.recoverTimer, 0.0f, 0.66f)) : Mathf.Clamp(this.health + 1f / 1000f * this.timescale * this.recoverTimer, 0.0f, 1f);
+            if (this.root.difficultyMode == 0 || this.root.difficultyMode == 1)
+                this.health = (double)this.health <= 0.660000026226044 ? ((double)this.health <= 0.330000013113022 ? Mathf.Clamp(this.health + 1f / 1000f * this.timescale * this.recoverTimer, 0.0f, 0.33f) : Mathf.Clamp(this.health + 1f / 1000f * this.timescale * this.recoverTimer, 0.0f, 0.66f)) : Mathf.Clamp(this.health + 1f / 1000f * this.timescale * this.recoverTimer, 0.0f, 1f);
             this.updateHealthHUD();
         }
         if (this.root.updateFramesDone > 3 && !this.isEnemy)
@@ -4889,7 +4872,7 @@ public class PlayerScript : MonoBehaviour
             else
                 this.ammoHudBullets[(int)num2].gameObject.SetActive(false);
         }
-        if (this.rootShared.modInfiniteAmmo || weapon == 0)
+        if (this.rootShared.modInfiniteAmmo || this.weapon <= 2)
         {
             this.ammoText.gameObject.SetActive(false);
             this.ammoHudInfiniteSymbol.gameObject.SetActive(true);
@@ -4918,7 +4901,7 @@ public class PlayerScript : MonoBehaviour
         if (this.isEnemy)
             return;
         this.ammoTotalWeaponToDisplay = this.weapon != 2 ? (this.weapon != 4 ? this.weapon : 3) : 1;
-        if (this.weapon == 0)
+        if (this.weapon == 0 || this.weapon == 1 || this.weapon == 2)
             this.ammoText.text = "Inf";
         else
             this.ammoText.text = (Mathf.Round(this.ammo[this.weapon]) + this.ammoTotal[this.ammoTotalWeaponToDisplay]).ToString();
@@ -4977,9 +4960,8 @@ public class PlayerScript : MonoBehaviour
 
     public virtual void reload()
     {
-        // if (this.weapon == 1 || this.weapon == 2)
-        //   this.ammoTotal[1] = this.ammoFullClip[2] * 2f;
-
+        if (this.weapon == 1 || this.weapon == 2)
+            this.ammoTotal[1] = this.ammoFullClip[2] * 2f;
         if (this.rootShared.modInfiniteAmmo)
         {
             for (int index = 0; index < this.weaponActive.Length; ++index)

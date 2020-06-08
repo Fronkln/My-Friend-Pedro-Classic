@@ -7,10 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "My Friend Pedro Classic", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FFADB951-8908-40F8-8E80-9489017EA516}"
 	ProjectSection(SolutionItems) = preProject
+		EnemyScript.cs = EnemyScript.cs
+		InputHelperScript.cs = InputHelperScript.cs
 		LevelCompleteScreenScript.cs = LevelCompleteScreenScript.cs
 		OptionsMenuScript.cs = OptionsMenuScript.cs
+		PlayerAnimationScripts.cs = PlayerAnimationScripts.cs
 		PlayerScript.cs = PlayerScript.cs
+		PlayerScript_bk.cs = PlayerScript_bk.cs
 		RootSharedScript.cs = RootSharedScript.cs
+		VoiceControllerScript.cs = VoiceControllerScript.cs
+		WeaponPickupScript.cs = WeaponPickupScript.cs
 	EndProjectSection
 EndProject
 Global

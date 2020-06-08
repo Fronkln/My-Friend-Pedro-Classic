@@ -1106,7 +1106,7 @@ public class OptionsMenuScript : MonoBehaviour
         this.createOption(3, this.rootShared.GetTranslation("mLvl3"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
         this.createOption(4, this.rootShared.GetTranslation("mLvl4"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
         this.createOption(5, this.rootShared.GetTranslation("mLvl5"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
-        this.createOption(6, this.rootShared.GetTranslation("mLvl6"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
+        this.createOption(7, this.rootShared.GetTranslation("mAgren"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
 
         int @int = SavedData.GetInt("levelSelectMaxNr");
         for (int i = 0; i <= 7; i++)

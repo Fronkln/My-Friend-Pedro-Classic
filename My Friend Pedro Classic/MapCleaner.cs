@@ -19,14 +19,24 @@ namespace MFPClassic
             enemySample.transform.position = MFPClassicAssets.player.transform.position;
             enemySample.SetActive(true);
             MFPClassicAssets.enemySample = GameObject.Find("New Enemy");
+
+            MFPClassicAssets.medkit = enemySample.GetComponent<EnemyScript>().medkit;
+
+            MFPClassicAssets.WeaponPickerSample = enemySample.transform.Find("EnemyGraphics/Armature/Center/LowerBack/UpperBack/Shoulder_R/UpperArm_R/LowerArm_R/Hand_R/pistol").gameObject;
+
             MFPClassicAssets.enemySample.SetActive(false);
 
+            MFPClassicAssets.doorSpawnerSample = GameObject.FindObjectOfType<SpawnDoorScript>().gameObject;
+
             MFPClassicAssets.doorSpawnerSample = GameObject.Instantiate(GameObject.FindObjectOfType<SpawnDoorScript>().transform.parent.gameObject);
-            MFPClassicAssets.doorSpawnerSample.GetComponentInChildren<BoxCollider>().center = new Vector3(4, -1, 2);
+            MFPClassicAssets.doorSpawnerSample.GetComponentInChildren<BoxCollider>().center = new Vector3(0, 0, 25f);
+            MFPClassicAssets.doorSpawnerSample.GetComponentInChildren<BoxCollider>().size = new Vector3(2, 10.5f, 10);
             MFPClassicAssets.doorSpawnerSample.SetActive(false);
 
+            MFPClassicAssets.openableDoor = MFPClassicAssets.classicBundle.LoadAsset("OpenableDoor") as GameObject;
+
             MFPEditorUtils.Log("Map cleanup warmup done");
-        }
+        }   
 
         public static void Clean()
         {

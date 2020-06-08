@@ -11,17 +11,43 @@ namespace MFPClassic
         public SwitchScript inputSwitch;
 
         private SwitchScript switchScript;
+        private RootScript root;
+
         public SwitchABMoveScript elevator;
 
         public SpawnDoorScript[] spawnDoors;
 
         bool enemiesKilled = false;
+        bool enemiesKilledS = false;
 
         public ElevatorScript()
         {
             switchScript = gameObject.AddComponent<SwitchScript>();
         }
 
+        public void Start()
+        {
+            root = MFPClassicAssets.root;
+        }
+
+        public void saveState()
+        {
+            enemiesKilledS = enemiesKilled;
+        }
+
+        public void loadState()
+        {
+            enemiesKilled = enemiesKilledS;
+        }
+
+        public void LateUpdate()
+        {
+            if (root.doCheckpointSave)
+                saveState();
+            if (root.doCheckpointLoad)
+                return;
+            loadState();
+        }
 
         public void OnTriggerStay(Collider coll)
         {
@@ -35,7 +61,7 @@ namespace MFPClassic
 
         public void Update()
         {
-            if(spawnDoors != null)
+            if (spawnDoors != null)
             {
                 if (!enemiesKilled)
                 {

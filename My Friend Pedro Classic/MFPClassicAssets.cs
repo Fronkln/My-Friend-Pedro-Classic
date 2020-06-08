@@ -24,8 +24,12 @@ namespace MFPClassic
         }
 
         public static RootScript root;
+        public static RootSharedScript rootShared;
 
         public static GameObject enemySample;
+        public static GameObject medkit;
+
+        public static GameObject openableDoor;
         public static GameObject doorSpawnerSample;
 
         public static GameObject pedroSample;
@@ -43,6 +47,33 @@ namespace MFPClassic
         public static Font preAlphaFont;
         public static PostProcessingProfile classicGraphics;
 
+        public static Material character_head_test_bald;
+
+
+        public static GameObject m4Gun;
+
+        //Boss Fight
+        public static GameObject miniVictor;
+        public static GameObject WeaponPickerSample;
+
+        //EnemyAssets
+
+        public static Mesh torsorBlacklongSleeve;
+
+        public static Material colorablePants;
+        public static Material hands02;
+
+        public static Mesh head02NoBandanaNoBeanie;
+        public static GameObject head02Bandana;
+        public static GameObject head02Beanie;
+        public static GameObject head02Cap;
+
+        public static Material head02Black;
+
+        public static Material blackEnemyWhiteTop;
+
+        public static Material whiteEnemyBlackShirt, blackEnemyBlackShirt;
+
 
         public static void LoadAssets()
         {
@@ -56,9 +87,33 @@ namespace MFPClassic
 
             wall_textures_1 = classicBundle.LoadAsset("wall_textures_1") as Texture2D;
 
-            preAlphaFont = classicBundle.LoadAsset("SpecialElite") as Font;
+            preAlphaFont = classicBundle.LoadAsset("Harting_plain") as Font;
 
             classicGraphics = classicBundle.LoadAsset("ClassicProfile") as PostProcessingProfile;
+
+            torsorBlacklongSleeve = classicBundle.LoadAsset("TorsorBlackLongSleeve") as Mesh;
+
+            m4Gun = classicBundle.LoadAsset("m4") as GameObject;
+
+            miniVictor = classicBundle.LoadAsset("miniVictor") as GameObject;
+            miniVictor.AddComponent<MiniVictor>();
+
+            colorablePants = classicBundle.LoadAsset("legs_01_color") as Material;
+            hands02 = classicBundle.LoadAsset("hands_02") as Material;
+
+            head02NoBandanaNoBeanie = classicBundle.LoadAsset("Head03") as Mesh;
+            head02Beanie = classicBundle.LoadAsset("head02Beanie") as GameObject;
+            head02Bandana = classicBundle.LoadAsset("head02Bandana") as GameObject;
+            head02Cap = classicBundle.LoadAsset("head02Cap") as GameObject;
+
+            head02Black = classicBundle.LoadAsset("blackman_enemy_head_01") as Material;
+
+            blackEnemyWhiteTop = classicBundle.LoadAsset("blackman_white_tanktop_texture") as Material;
+
+            whiteEnemyBlackShirt = classicBundle.LoadAsset("black_shirt_texture") as Material;
+            blackEnemyBlackShirt = classicBundle.LoadAsset("blackman_shirt_texture") as Material;
+
+            character_head_test_bald = classicBundle.LoadAsset("character_head_01_TEST") as Material;
 
             if (pedroSounds[3] == null)
                 Application.Quit();

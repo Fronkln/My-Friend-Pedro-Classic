@@ -33,16 +33,32 @@ namespace MFPClassic
                     musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("tutorial_music_1") as AudioClip;
                     break;
                 case 2:
+                    introOverride = true;
+
                     musicData.intro = MFPClassicAssets.classicBundle.LoadAsset("music1Intro") as AudioClip;
                     musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("music1") as AudioClip;
-                    introOverride = true;
                     break;
                 case 3:
                     musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("music2") as AudioClip;
                     break;
+                case 4:
+                    introOverride = true;
+
+                    musicData.intro = MFPClassicAssets.classicBundle.LoadAsset("music3Intro") as AudioClip;
+                    musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("music3") as AudioClip;
+                    break;
+                case 5:
+                    musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("music4") as AudioClip;
+                    break;
+                case 6:
+                    musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("music5") as AudioClip;
+                    break;
+                case 8:
+                    musicData.loop = MFPClassicAssets.classicBundle.LoadAsset("bossLoop") as AudioClip;
+                    break;
             }
 
-            if (musicData.intro != null && musicData.loop != null)
+            if (musicData.intro != null || musicData.loop != null)
                 MFPEditorUtils.Log("Custom music loaded");
 
             if (musicData.intro != null)

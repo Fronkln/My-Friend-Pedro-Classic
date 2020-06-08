@@ -8,11 +8,10 @@ using UnityEngine.UI;
 using I2.Loc;
 using System.Reflection;
 
-
 namespace MFPClassic
 {
 
-     class MFPEditorGUILogging : MonoBehaviour
+    class MFPEditorDebuggerRuntime : MonoBehaviour
     {
         public List<string> logs = new List<string>();
 
@@ -26,15 +25,77 @@ namespace MFPClassic
 
         public void OnGUI()
         {
+            if (logs == null) logs = new List<string>();
+
+
+            if (logs.Count > 10)
+                logs.RemoveAt(0);
+
             foreach (string log in logs)
-                GUILayout.Label(log);
+                if (log != null)
+                    GUILayout.Label(log);
+
+            if (Camera.main != null)
+            {
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.transform != null)
+                    {
+                        GUILayout.Button(hit.transform.name);
+                        if (Input.GetKeyDown(KeyCode.U))
+                        {
+    
+                            SwitchABMoveScript carScript = GameObject.Find("Car_3 (5)").GetComponent<SwitchABMoveScript>();
+
+                            if (carScript.inputSwitch.Length != 0)
+                                MFPEditorUtils.Log(carScript.inputSwitch[0].gameObject.name);
+
+                            MFPEditorUtils.Log(carScript.invert.ToString());
+                            MFPEditorUtils.Log(carScript.moveOffset.ToString());
+                            MFPEditorUtils.Log(carScript.movePos.ToString());
+                            MFPEditorUtils.Log(carScript.moveSpeed.ToString());
+                            MFPEditorUtils.Log(carScript.noInputSwitchAnimPause.ToString());
+                            MFPEditorUtils.Log(carScript.onOffSwitchBehaviour.ToString());
+                            MFPEditorUtils.Log(carScript.outputOnMovement.ToString());
+                            MFPEditorUtils.Log(carScript.outputOnReachedEnd.ToString());
+                            MFPEditorUtils.Log(carScript.returnAnimLengthInFrames.ToString());
+                            MFPEditorUtils.Log(carScript.scaleSpeedDependingOnPlayerSpeedGameModifier.ToString());
+                            MFPEditorUtils.Log(carScript.useLocalPos.ToString());
+
+
+                            MFPEditorUtils.Log("------------");
+
+                            foreach (Component comp in hit.transform.gameObject.GetComponents<Component>())
+                            {
+                                MFPEditorUtils.Log(comp.ToString() + " " + comp.gameObject.name);
+                                ExtensiveLogging.Log(comp);
+                                MFPEditorUtils.Log("------------");
+                            }
+
+                            foreach (Component comp in hit.transform.gameObject.GetComponentsInChildren<Component>())
+                            {
+                                MFPEditorUtils.Log(comp.ToString() + " " + comp.gameObject.name);
+                                ExtensiveLogging.Log(comp);
+                                MFPEditorUtils.Log("------------");
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                MFPClassicAssets.player.transform.position = new Vector3(MFPClassicAssets.player.mousePos.x, MFPClassicAssets.player.mousePos.y, 0.0f);
+                MFPClassicAssets.player.ySpeed = 1f;
+            }
         }
 
         public void GUILog(string txt)
         {
-            if(logs.Count > 10)
-               logs.RemoveAt(0);
-
             logs.Add(txt);
         }
     }
@@ -42,7 +103,7 @@ namespace MFPClassic
 
     public static class MFPEditorUtils
     {
-        private static MFPEditorGUILogging guiInstance;
+        private static MFPEditorDebuggerRuntime guiInstance;
 
         public static Texture2D LoadPNG(string filePath)
         {
@@ -50,7 +111,7 @@ namespace MFPClassic
             if (File.Exists(filePath))
             {
                 byte[] data = File.ReadAllBytes(filePath);
-                texture2D = new Texture2D(2, 2);    
+                texture2D = new Texture2D(2, 2);
 
                 texture2D.LoadImage(data);
             }
@@ -69,8 +130,8 @@ namespace MFPClassic
 
         public static void InitGUILogging()
         {
-            if(guiInstance == null)
-            guiInstance = new GameObject().AddComponent<MFPEditorGUILogging>();
+            if (guiInstance == null)
+                guiInstance = new GameObject().AddComponent<MFPEditorDebuggerRuntime>();
         }
 
         public static void Log(string text)
@@ -103,102 +164,83 @@ namespace MFPClassic
             File.WriteAllLines(file, new string[1] { JsonUtility.ToJson(obj, true) });
         }
 
+        public static void UnlockWeapons(int start, int end)
+        {
+            for (int i = start; i <= end; i++)
+            {
+                MFPClassicAssets.player.weaponActive[i] = true;
+                MFPClassicAssets.player.ammo[i] = MFPClassicAssets.player.ammoFullClip[i];
+                MFPClassicAssets.player.ammoTotal[i] = MFPClassicAssets.player.ammoTotal[i] + MFPClassicAssets.player.ammoFullClip[i] * 2f;
+            }
+        }
+
 
         public static void FixPlayerLoadout()
         {
+
+            if (MFPClassicAssets.rootShared != null && MFPClassicAssets.rootShared.modAllWeapons)
+                return;
+
+#if !DEBUG
+            if(MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                for (int i = 2; i <= 10; i++)
+                    MFPClassicAssets.player.weaponActive[i] = false;
+#endif
+
+
+            MFPClassicAssets.player.weaponActive[0] = true;
+
             switch (MapManager.currentLevel)
             {
                 case 1:
+
                     for (int i = 2; i <= 10; i++)
-                    {
                         MFPClassicAssets.player.weaponActive[i] = false;
-                        MFPClassicAssets.player.changeWeapon(1);
-                    }
+
+                    MFPClassicAssets.player.weaponActive[1] = true;
+                    MFPClassicAssets.player.changeWeapon(1);
                     break;
                 case 2:
-                    if (!MFPClassicAssets.player.weaponActive[2])
-                        MFPClassicAssets.player.weaponActive[2] = true;
+                     MFPClassicAssets.player.weaponActive[2] = true;
+
+                     if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                        MFPClassicAssets.player.changeWeapon(2);
+                    break;
+                case 3:
+                    goto case 2;
+                case 4:
+                    if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                    {
+                        UnlockWeapons(1, 4);
+                        MFPClassicAssets.player.changeWeapon(4);
+                    }
+
+                    break;
+                case 5:
+                    if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                    {
+                        UnlockWeapons(1, 5);
+                        MFPClassicAssets.player.changeWeapon(5);
+                    }
+                    break;
+                case 6:
+                    if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                    {
+                        UnlockWeapons(1, 6);
+                        MFPClassicAssets.player.changeWeapon(6);
+                    }
                     break;
 
+                case 8:
+                    if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                    {
+                        UnlockWeapons(1, 6);
+                        MFPClassicAssets.player.changeWeapon(6);
+                    }
+                    break;
             }
 
             GameObject.FindObjectOfType<UIWeaponSelectorScript>().prepareUI();
-        }
-
-        public static GameObject SpawnPedro(Vector3 position, string name = "Pedro")
-        {
-            GameObject pedro = GameObject.Instantiate(MFPClassicAssets.pedroSample);
-            pedro.transform.position = position + new Vector3(3 ,0, 0);
-            pedro.SetActive(true);
-            pedro.name = name;
-
-            return pedro;
-        }
-
-        public static void CreateChairEnemy(GameObject chair, EnemyScript enemy, bool faceRight, bool fallOver = true)
-        {
-            EnemyChairScript chairScript = chair.AddComponent<EnemyChairScript>();
-            chairScript.targetEnemy = enemy;
-
-            enemy.standStill = true;
-            enemy.faceRight = faceRight;
-            enemy.transform.position = chairScript.gameObject.transform.position + new Vector3(-1, 0, 0);
-
-            chairScript.fallOver = fallOver;
-
-            MFPEditorUtils.Log("Created chair enemy from: " + enemy.transform.name);
-        }
-
-        public static SpawnDoorScript CreateEnemyDoor(Vector3 position, int enemyCount)
-        {
-            GameObject newDoor = GameObject.Instantiate(MFPClassicAssets.doorSpawnerSample);
-            newDoor.GetComponentInChildren<SpawnDoorScript>().nrOfEnemies = enemyCount;
-            newDoor.transform.position = position;
-
-            newDoor.SetActive(true);
-
-            return newDoor.GetComponentInChildren<SpawnDoorScript>();
-        }
-
-        public static SpeechTriggerControllerScript GenerateSpeechScript(GameObject target, Transform followTarget, string speakerName, string locStringID, AudioClip voice, bool freezePlayer, GameObject forceSpawnPedro = null)
-        {
-
-            SwitchScript switchScript = target.AddComponent<SwitchScript>();
-            switchScript.output = 1;
-
-            SpeechTriggerScript speechTriggerScript = target.AddComponent<SpeechTriggerScript>();
-
-            if (freezePlayer)
-            {
-                speechTriggerScript.clickToContinue = true;
-                speechTriggerScript.clickToContinueDontFreeze = false;
-            }
-
-            speechTriggerScript.followTransform = followTarget;
-
-            speechTriggerScript.speakerName = speakerName;
-
-            if (forceSpawnPedro != null)
-                speechTriggerScript.forceSpawnPedro = forceSpawnPedro.GetComponent<PedroScript>();
-
-            string testString = "";
-
-            LocalizationManager.TryGetTranslation(speakerName, out testString);
-
-            if (testString.ToLower().Contains("missing translation"))
-                CreateTranslation(speakerName, speakerName);
-
-            speechTriggerScript.activateSwitchScript = true;
-            speechTriggerScript.voice = voice;
-
-            speechTriggerScript.locStringId = locStringID;
-
-            SpeechTriggerControllerScript controllerScript = target.AddComponent<SpeechTriggerControllerScript>();
-
-            controllerScript.inputSwitch = new SwitchScript[0];
-
-            return controllerScript;
-
         }
 
         public static void CreateTranslation(string termName, string translation)
