@@ -48,7 +48,7 @@ namespace MFPClassic
                         GUILayout.Button(hit.transform.name);
                         if (Input.GetKeyDown(KeyCode.U))
                         {
-    
+
                             SwitchABMoveScript carScript = GameObject.Find("Car_3 (5)").GetComponent<SwitchABMoveScript>();
 
                             if (carScript.inputSwitch.Length != 0)
@@ -182,7 +182,7 @@ namespace MFPClassic
                 return;
 
 #if !DEBUG
-            if(MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+            if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
                 for (int i = 2; i <= 10; i++)
                     MFPClassicAssets.player.weaponActive[i] = false;
 #endif
@@ -190,20 +190,33 @@ namespace MFPClassic
 
             MFPClassicAssets.player.weaponActive[0] = true;
 
+
+            if (MapManager.currentLevel != 1 && MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                for (int i = 1; i <= 10; i++)
+                {
+                    MFPClassicAssets.player.ammoTotal[i] = (int)MFPClassicAssets.root.ammoMax[i] / 12;
+                }
+
             switch (MapManager.currentLevel)
             {
                 case 1:
 
-                    for (int i = 2; i <= 10; i++)
-                        MFPClassicAssets.player.weaponActive[i] = false;
+                    if (!MFPClassicAssets.rootShared.modAllWeapons)
+                        for (int i = 1; i <= 10; i++)
+                        {
+                            MFPClassicAssets.player.ammoTotal[i] = (int)MFPClassicAssets.root.ammoMax[i] / 12;
+                            if (i != 1)
+                                MFPClassicAssets.player.weaponActive[i] = false;
+                        }
+
 
                     MFPClassicAssets.player.weaponActive[1] = true;
                     MFPClassicAssets.player.changeWeapon(1);
                     break;
                 case 2:
-                     MFPClassicAssets.player.weaponActive[2] = true;
+                    MFPClassicAssets.player.weaponActive[2] = true;
 
-                     if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
+                    if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
                         MFPClassicAssets.player.changeWeapon(2);
                     break;
                 case 3:

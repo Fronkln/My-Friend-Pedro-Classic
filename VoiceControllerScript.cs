@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using MFPClassic;
 
 // Token: 0x020000DD RID: 221
 [Serializable]
@@ -97,21 +98,32 @@ public class VoiceControllerScript : MonoBehaviour
 
             if (shouldSpeak)
             {
-               if (voice.isPlaying)
-                   voice.Stop();
+                if (voice.isPlaying)
+                    voice.Stop();
+
+
+                while (true)
+                {
+
+                    int rnd = UnityEngine.Random.Range(0, MFPClassicAssets.pedroSounds.Length);
+
+                    if (rnd != lastVoiceIndex)
+                    {
+                        voice.clip = MFPClassicAssets.pedroSounds[rnd];
+                        lastVoiceIndex = rnd;
+                        break;
+                    }
+
+                }
+
 
                 voice.Play();
-                MFPClassic.MFPEditorUtils.Log("I should be speaking");
-
-                //if Pedro
-                if(voice.clip)
-                voice.clip = 
                 shouldSpeak = false;
             }
 
             if (flag3)
             {
-                this.voiceTargetVolume = 0f;
+                //this.voiceTargetVolume = 0f;
                 bool flag4 = this.curVoiceChar == '.' || this.curVoiceChar == '?' || this.curVoiceChar == '!';
                 if (flag4)
                 {
@@ -143,6 +155,9 @@ public class VoiceControllerScript : MonoBehaviour
     public virtual void Main()
     {
     }
+
+
+    private static int lastVoiceIndex = -1;
 
     // Token: 0x0400133C RID: 4924
     private RootScript root;

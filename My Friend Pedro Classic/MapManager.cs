@@ -194,6 +194,7 @@ namespace MFPClassic
             playerInput = ReInput.players.GetPlayer(0);
 
             MFPClassicAssets.root.nrOfEnemiesTotal = 0;
+            MFPClassicAssets.root.dontAllowCheckpointSave = true;
 
             MFPEditorUtils.Log("MapManager awake, will load level ID: " + currentLevel.ToString());
             //     GameObject.Find("Main Camera").GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>().enabled = false;

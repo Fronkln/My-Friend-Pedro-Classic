@@ -18,6 +18,12 @@ namespace MFPClassic
             enemySample.name = "New Enemy";
             enemySample.transform.position = MFPClassicAssets.player.transform.position;
             enemySample.SetActive(true);
+
+            EnemyScript enemySc = enemySample.GetComponent<EnemyScript>();
+            enemySc.alwaysOnFlatGround = false;
+            enemySc.dontWallCheckLeft = false;
+            enemySc.dontWallCheckRight = false;
+
             MFPClassicAssets.enemySample = GameObject.Find("New Enemy");
 
             MFPClassicAssets.medkit = enemySample.GetComponent<EnemyScript>().medkit;
