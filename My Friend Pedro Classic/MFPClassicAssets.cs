@@ -51,6 +51,8 @@ namespace MFPClassic
 
 
         public static GameObject m4Gun;
+        public static Sprite m4Sprite;
+
 
         //Boss Fight
         public static GameObject miniVictor;
@@ -94,6 +96,10 @@ namespace MFPClassic
             torsorBlacklongSleeve = classicBundle.LoadAsset("TorsorBlackLongSleeve") as Mesh;
 
             m4Gun = classicBundle.LoadAsset("m4") as GameObject;
+
+            Texture2D m4IcoTex = classicBundle.LoadAsset("m4_ico_2") as Texture2D;
+            m4Sprite = Sprite.Create(m4IcoTex, new Rect(0.0f, 0.0f, m4IcoTex.width, m4IcoTex.height), new Vector2(0.5f, 0.5f), 100.0f);
+
 
             miniVictor = classicBundle.LoadAsset("miniVictor") as GameObject;
             miniVictor.AddComponent<MiniVictor>();

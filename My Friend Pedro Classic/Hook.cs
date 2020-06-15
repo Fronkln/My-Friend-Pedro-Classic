@@ -545,6 +545,18 @@ namespace MFPClassic
         }
 
         [HarmonyPatch(typeof(RootScript))]
+        [HarmonyPatch("Start")]
+        private class RootStartPatch
+        {
+            [HarmonyPostfix]
+            static void Testing(RootScript __instance)
+            {
+                __instance.weaponIcons[5] = MFPClassicAssets.m4Sprite;
+            }
+        }
+
+
+        [HarmonyPatch(typeof(RootScript))]
         [HarmonyPatch("Update")]
         private class RootUpdatePatch
         {

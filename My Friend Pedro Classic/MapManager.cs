@@ -189,6 +189,12 @@ namespace MFPClassic
             if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
                 MFPClassicAssets.player.health = 1f;
 
+            if (GameObject.FindObjectOfType<UIWeaponSelectorScript>())
+            {
+                UIWeaponSelectorScript sc = GameObject.FindObjectOfType<UIWeaponSelectorScript>();
+
+            }
+
             inst = this;
 
             playerInput = ReInput.players.GetPlayer(0);
@@ -436,6 +442,7 @@ namespace MFPClassic
                     enemies[11].standStillInHuntMode = true;
 
                     enemies[11].weapon = 6;
+                    enemies[11].disableWeaponPickup = true;
 
                     RuntimeEntities.CreateChairEnemy(GameObject.Find("MFPLevel/WoodenChair/WoodenChair_0 (3)"), enemies[2], false);
                     RuntimeEntities.CreateChairEnemy(GameObject.Find("MFPLevel/WoodenChair/WoodenChair_0 (1)"), enemies[4], false);
@@ -609,6 +616,7 @@ namespace MFPClassic
                     enemies[14].standStill = true;
                     enemies[14].standStillInHuntMode = true;
                     enemies[14].faceRight = false;
+                    enemies[14].disableWeaponPickup = true;
 
                     break;
 

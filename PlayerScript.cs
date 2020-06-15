@@ -4784,6 +4784,7 @@ public class PlayerScript : MonoBehaviour
             this.reload();
         if (this.isEnemy)
             return;
+        weaponHUDIcon.preserveAspect = true;
         this.weaponHUDIcon.sprite = this.root.weaponIcons[this.weapon];
         this.updateAmmoHUD();
     }

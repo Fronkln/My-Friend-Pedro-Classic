@@ -11,10 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		InputHelperScript.cs = InputHelperScript.cs
 		LevelCompleteScreenScript.cs = LevelCompleteScreenScript.cs
 		OptionsMenuScript.cs = OptionsMenuScript.cs
+		PickUpNotificationScript.cs = PickUpNotificationScript.cs
 		PlayerAnimationScripts.cs = PlayerAnimationScripts.cs
 		PlayerScript.cs = PlayerScript.cs
 		PlayerScript_bk.cs = PlayerScript_bk.cs
 		RootSharedScript.cs = RootSharedScript.cs
+		UINewWeaponScript.cs = UINewWeaponScript.cs
+		UIWeaponHighligtScript.cs = UIWeaponHighligtScript.cs
 		VoiceControllerScript.cs = VoiceControllerScript.cs
 		WeaponPickupScript.cs = WeaponPickupScript.cs
 	EndProjectSection
