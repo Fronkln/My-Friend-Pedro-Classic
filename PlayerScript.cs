@@ -134,6 +134,8 @@ public class PlayerScript : MonoBehaviour
     public Vector3 mousePos;
     public Vector3 mousePos2;
     private Vector3 mousePosWithZOffset;
+
+    public Camera curCameraPublic { get { return curCamera; } set { curCamera = value; } }
     private Camera curCamera;
     private CameraScript cameraScript;
     private VignetteAndChromaticAberration cameraVignetteOverlay;

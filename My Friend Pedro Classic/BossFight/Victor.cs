@@ -33,8 +33,12 @@ namespace MFPClassic
 
         private Vector3 lerpDefaultPos;
 
-        public float targetJawIntensity = 0;
-        private float currentJawIntensity = 0;
+        private float currentJawIntensity = 1.128f;
+
+        public float jawSpeed = 0.03f;
+
+        public readonly float jawMin = 1.128f;
+        public readonly float jawMax = 1.994f;
 
         public bool jawMoving = false;
 
@@ -50,25 +54,7 @@ namespace MFPClassic
 
         public bool waiting = false;
 
-        public int nrOfAttacks = 0;
-
         [HideInInspector] public List<Transform> victorHeads = new List<Transform>();
-
-        #region Checkpoint Variables
-        private float currentJawIntensityS = 0;
-        private float targetJawIntensityS = 0;
-        private bool jawMovingS = false;
-        private bool lookAtS = false;
-        private bool attackingS = false;
-        private float attackDelayS = 0;
-        private int nrOfAttackS = 0;
-        private bool canAttackS = false;
-        private bool waitingS = false;
-
-        private bool forceJawInstant = false;
-        
-        private List<Transform> victorHeadsS = new List<Transform>();
-        #endregion
 
 
 
@@ -99,295 +85,14 @@ namespace MFPClassic
         }
 
 
-        public void saveState()
-        {
-            currentJawIntensityS = currentJawIntensity;
-            targetJawIntensityS = targetJawIntensity;
-            jawMovingS = jawMoving;
-            lookAtS = lookAt;
-            attackingS = attacking;
-            attackDelayS = attackDelay;
-            nrOfAttackS = nrOfAttacks;
-            canAttackS = canAttack;
-            waitingS = waiting;
-            victorHeadsS = victorHeads.ToList();
-        }
-
-        public void loadState()
-        {
-            forceJawInstant = true;
-
-            foreach (Transform miniVic in victorHeads)
-            {
-                if (!victorHeadsS.Contains(miniVic))
-                    Destroy(miniVic);
-                else
-                    MFPEditorUtils.Log("miniVic is in victorHeadsS array");
-            }
-
-            MFPEditorUtils.Log(currentJawIntensity + " " + currentJawIntensityS);
-
-
-        //    SetJaw(currentJawIntensity - currentJawIntensityS, true);
-
-            currentJawIntensity = currentJawIntensityS;
-            targetJawIntensity = targetJawIntensityS;
-            jawMoving = jawMovingS;
-            lookAt = lookAtS;
-            attacking = attackingS;
-            attackDelay = attackDelayS;
-            nrOfAttacks = nrOfAttackS;
-            canAttack = canAttackS;
-            waiting = waitingS;
-            victorHeads = victorHeadsS.ToList();
-
-            //Move(targetJawIntensity - currentJawIntensity);
-
-        }
-
-        public void LateUpdate()
-        {
-
-            if (root.doCheckpointSave)
-            {
-                MFPEditorUtils.Log("SAVE CALLED");
-                saveState();
-            }
-            if (root.doCheckpointLoad)
-                loadState();
-
-        }
-
-        public void NewAttack(VictorAttacks newAttack)
-        {
-            currentAttack = newAttack;
-
-            switch (currentAttack)
-            {
-                case VictorAttacks.BulletMouth:
-                    //targetJawIntensity = 5;
-                    SetJaw(5f, true);
-                    
-
-                    switch (root.difficultyMode)
-                    {
-                        case 0:
-                            nrOfAttacks = UnityEngine.Random.Range(6, 11);
-                            break;
-                        case 1:
-                            goto case 0;
-                        case 2:
-                            nrOfAttacks = UnityEngine.Random.Range(8, 13);
-                            break;
-                    }
-                    break;
-
-                case VictorAttacks.LittleHeads:
-                    //targetJawIntensity = 5;
-                    SetJaw(5f, true);
-
-                    switch (root.difficultyMode)
-                    {
-                        case 0:
-                            nrOfAttacks = UnityEngine.Random.Range(4, 7);
-                            break;
-                        case 1:
-                            nrOfAttacks = UnityEngine.Random.Range(6, 8);
-                            break;
-                        case 2:
-                            nrOfAttacks = UnityEngine.Random.Range(7, 10);
-                            break;
-                    }
-                    break;
-            }
-
-            attacking = true;
-
-            waiting = false;
-            canAttack = false;
-
-        }
-
-        public void AttackBehaviour()
-        {
-            if (!attacking || jawMoving)
-                return;
-
-            switch (currentAttack)
-            {
-                #region Bullet Mouth
-                case VictorAttacks.BulletMouth:
-                    lookAt = true;
-                    shootNode.transform.LookAt(thePlayer.transform.position);
-
-                    if (!canAttack && !waiting)
-                    {
-                        attackDelay = (thePlayer.dodgingCoolDown <= 0 ? UnityEngine.Random.Range(0.5f, 1.7f) : thePlayer.dodgingCoolDown / 30);
-                        waiting = true;
-                        break;
-                    }
-
-                    if (waiting && !canAttack)
-                        if (attackDelay <= 0)
-                        {
-                            canAttack = true;
-                            waiting = false;
-                        }
-
-                    if (canAttack)
-                        if (attackDelay <= 0)
-                        {
-                            if (nrOfAttacks != 0)
-                            {
-                                root.getBullet(shootNode.transform.position, Quaternion.LookRotation(shootNode.transform.forward));
-
-                                BulletScript bulletScript = this.root.getBulletScript();
-                                bulletScript.bulletStrength = 0.35f;
-                                bulletScript.bulletSpeed = 10f;
-                                bulletScript.friendly = false;
-                                bulletScript.doPostSetup();
-
-                                nrOfAttacks--;
-
-                                switch (root.difficultyMode)
-                                {
-                                    case 0:
-                                        attackDelay = 0.2f;
-                                        break;
-                                    case 1:
-                                        goto case 0;
-                                    case 2:
-                                        attackDelay = 0.1f;
-                                        break;
-                                }
-                                break;
-                            }
-                            else
-                            {
-                                attacking = false;
-                                lookAt = false;
-                                SetJaw(-currentJawIntensity);
-                                break;
-                            }
-                        }
-
-                    break;
-                #endregion
-                #region Little Heads
-                case VictorAttacks.LittleHeads:
-                    lookAt = true;
-                    shootNode.transform.LookAt(thePlayer.transform.position);
-
-                    if (!canAttack && !waiting)
-                    {
-                        attackDelay = 2;
-                        waiting = true;
-                        break;
-                    }
-
-                    if (waiting && !canAttack)
-                        if (attackDelay <= 0)
-                        {
-                            canAttack = true;
-                            waiting = false;
-                        }
-
-                    if (canAttack)
-                    {
-                        if (attackDelay <= 0)
-                        {
-                            if (nrOfAttacks != 0)
-                            {
-                                GameObject miniVic = Instantiate(MFPClassicAssets.miniVictor);
-                                miniVic.transform.position = new Vector3(shootNode.transform.position.x, shootNode.transform.position.y, miniVic.transform.position.z);
-
-                                victorHeads.Add(miniVic.transform);
-
-                                attackDelay = 0.5f;
-                                nrOfAttacks--;
-                            }
-                            else
-                            {
-                                lookAt = false;
-                                attacking = false;
-                                SetJaw(-currentJawIntensity);
-                                break;
-                            }
-                        }
-                    }
-
-
-                    break;
-                    #endregion
-
-            }
-        }
-
         public void Update()
         {
-
-            if (Input.GetKeyDown(KeyCode.M))
-                NewAttack(VictorAttacks.LittleHeads);
             if (Input.GetKeyDown(KeyCode.V))
-                SetJaw(-currentJawIntensity);
+                StartCoroutine(MoveJaw(1.7f));
 
-            if (!forceJawInstant)
-                head.transform.position = new Vector3(head.transform.position.x, Vector2.Lerp(head.transform.position, headLerpPoint.transform.position, 0.05f).y, head.transform.position.z);
-            else
-            {
-                bool wasLookat = lookAt;
+            if (Input.GetKeyDown(KeyCode.N))
+                StartCoroutine(DoAttack(VictorAttacks.LittleHeads));
 
-                forceJawInstant = false;
-                lookAt = false;
-                head.transform.position = new Vector3(head.transform.position.x, headLerpPoint.transform.position.y, head.transform.position.z);
-
-                if(wasLookat)
-                    lookAt = true;
-            }
-
-            float diff = head.transform.position.y - headLerpPoint.transform.position.y;
-
-            if (diff < 0.05f && diff > -0.05f)
-                jawMoving = false;
-            else
-                jawMoving = true;
-
-            
-
-            /*
-            if (currentJawIntensity != targetJawIntensity)
-            {
-                float diff = targetJawIntensity - currentJawIntensity;
-
-                if (diff > -0.15f && diff < 0.15f)
-                {
-                    jawMoving = false;
-                    Move(diff);
-                }
-                else
-                    jawMoving = true;
-
-                float moveAmount = (targetJawIntensity <= 0.15f ? 0.05f : 0.1f); /*(targetJawIntensity <= 0.15f ? 0.1f : targetJawIntensity / 24);
-
-
-                
-                if (jawMoving)
-                {
-                    headPivot.transform.rotation = defaultHeadRotation;
-
-                    if (currentJawIntensity < targetJawIntensity)
-                        Move(moveAmount);
-
-                    if (currentJawIntensity > targetJawIntensity)
-                        Move(-moveAmount);
-                }
-                MFPEditorUtils.Log(currentJawIntensity.ToString() + " " + targetJawIntensity.ToString() + " " + moveAmount.ToString() + " " + diff.ToString());
-
-            }
-            else
-                jawMoving = false;
-                */
-            
 
             if (lookAt)
             {
@@ -399,197 +104,310 @@ namespace MFPClassic
 
                 debugPos = dir;
             }
-
-        }
-
-        public void FixedUpdate()
-        {
-            if (attacking)
-                attackDelay -= Time.deltaTime;
-            else
-                attackDelay = 0;
-
-            AttackBehaviour();
         }
 
 
-        public void SetJaw(float yPos, bool checkEquals = false)
-        {
-            if (checkEquals)
-                if(yPos != 0)
-                if (currentJawIntensity == yPos)
-                    return;
-
-            lookAt = false;
-            headPivot.transform.rotation = defaultHeadRotation;
-
-            if (yPos != 0)
-                headLerpPoint.transform.position += new Vector3(0, yPos, 0);
-            else
-                headLerpPoint.transform.localPosition = lerpDefaultPos;
-
-            currentJawIntensity += yPos;
-
-           // if (yPos == 0)
-           //  headLerpPoint.transform.position = lerpDefaultPos;
-           // else
-           // headLerpPoint.transform.position = new Vector3(headLerpPoint.transform.position.x, yPos, headLerpPoint.transform.position.z);
-        }
-
-        /*
-        public IEnumerator DoAttack()
+        public IEnumerator DoAttack(VictorAttacks attackType)
         {
             if (attacking)
                 yield break;
 
             attacking = true;
+            currentAttack = attackType;
 
-            switch (currentAttack)
+
+
+            switch (attackType)
             {
-                #region Bullet Mouth
-                case VictorAttacks.BulletMouth:
-                    targetJawIntensity = 0;
-                    while (jawMoving)
-                    {
-                        yield return null;
-                    }
-                    MFPEditorUtils.Log("My jaw is open, time to attack!");
-                    lookAt = true;
-
-                    int nrOfAttacks = UnityEngine.Random.Range(8, 14);
-
-
-                    float shootDelay = (thePlayer.dodgingCoolDown <= 0 ? UnityEngine.Random.Range(1, 2) : thePlayer.dodgingCoolDown / 30);
-
-                    yield return new WaitForSeconds(shootDelay);
-
-                    while (nrOfAttacks != 0)
-                    {
-                        root.getBullet(shootNode.transform.position, Quaternion.LookRotation(shootNode.transform.forward));
-
-                        BulletScript bulletScript = this.root.getBulletScript();
-                        bulletScript.bulletStrength = 0.35f;
-                        bulletScript.bulletSpeed = 10f;
-                        bulletScript.friendly = false;
-                        bulletScript.doPostSetup();
-
-                        nrOfAttacks--;
-
-                        yield return new WaitForSeconds(0.1f);
-                    }
-
-                    break;
-                #endregion
-                #region Little Heads
                 case VictorAttacks.LittleHeads:
-
-                    StartCoroutine(MoveJawSmooth(5));
-                    while (jawMoving)
-                    {
-                        yield return null;
-                    }
-                    MFPEditorUtils.Log("My jaw is open, time to attack!");
                     lookAt = true;
+                    StartCoroutine(MoveJaw(2));
 
-                    yield return new WaitForSeconds(2);
+                    while (jawMoving)
+                        yield return null;
 
-                    int nrofHeads = UnityEngine.Random.Range(3, 7);
+                    MFPEditorUtils.Log("My jaw is open, time to attack!");
 
-                    while (nrofHeads != 0)
+                    int nrOfHeads = 0;
+
+                    switch (root.difficultyMode)
+                    {
+                        case 0: nrOfHeads = Random.Range(4, 7); break;
+                        case 1: nrOfHeads = Random.Range(5, 9); break;
+                        case 2: nrOfHeads = Random.Range(6, 13); break;
+                    }
+
+
+                    //TODO: Maybe pool them?
+                    while(nrOfHeads != 0)
                     {
                         GameObject miniVic = Instantiate(MFPClassicAssets.miniVictor);
                         miniVic.transform.position = new Vector3(shootNode.transform.position.x, shootNode.transform.position.y, miniVic.transform.position.z);
 
-                        victorHeads.Add(miniVic.transform);
-
-                        nrofHeads--;
+                        nrOfHeads--;
 
                         yield return new WaitForSeconds(0.5f);
                     }
+
                     break;
-                    #endregion
             }
 
-            attacking = false;
             yield return null;
         }
-        */
 
-        /*
-        public IEnumerator MoveJawSmooth(float target)
+        public IEnumerator MoveJaw(float target)
         {
 
-            MFPEditorUtils.Log("TICK");
+            float targetClamped = target;
 
-            if (currentJawIntensity == target)
+            if (targetClamped < jawMin)
+                targetClamped = jawMin;
+            if (targetClamped > jawMax)
+                targetClamped = jawMax;
+
+            if (targetClamped == currentJawIntensity)
+            {
+                MFPEditorUtils.Log("No.");
                 yield break;
+            }
 
-            bool wasAtLookAt = lookAt;
-            lookAt = false;
-
-            headPivot.transform.rotation = defaultHeadRotation;
-
-            float moveAmount = (target <= 0.15f ? 0.1f : target / 24);
             jawMoving = true;
 
 
-            if (target > currentJawIntensity)
+            MFPEditorUtils.Log(targetClamped.ToString());
+
+            if (targetClamped > currentJawIntensity)
             {
-                while (currentJawIntensity < target)
+                while (currentJawIntensity < targetClamped)
                 {
-                    if (!root.dead)
-                        if (!root.paused)
-                        {
+                    float yAmount = Mathf.Clamp(head.transform.localPosition.y + jawSpeed, jawMin, jawMax);
+                    head.transform.localPosition = new Vector3(head.transform.localPosition.x, yAmount, head.transform.localPosition.z);
+                    currentJawIntensity = yAmount;
 
-                            Move(moveAmount);
-                            //  Move(0.1f);
-
-                            //  currentJawIntensity += Time.deltaTime;
-                            currentJawIntensity += moveAmount;
-                        }
                     yield return null;
                 }
-
-                currentJawIntensity = target;
             }
             else
             {
-                while (currentJawIntensity > target)
-                {
-                    if (!root.dead)
-                        if (!root.paused)
-                        {
-                            Move(-moveAmount);
-                            // Move(-0.1f);
 
-                            //   currentJawIntensity -= Time.deltaTime;
-                            currentJawIntensity -= moveAmount;
-                        }
+                while (currentJawIntensity > targetClamped)
+                {
+                    float yAmount = Mathf.Clamp(head.transform.localPosition.y - jawSpeed, jawMin, jawMax);
+                    head.transform.localPosition = new Vector3(head.transform.localPosition.x, yAmount, head.transform.localPosition.z);
+                    currentJawIntensity = yAmount;
+
                     yield return null;
                 }
-
-                currentJawIntensity = target;
             }
 
-            if (wasAtLookAt)
-                lookAt = true;
+            head.transform.localPosition = new Vector3(head.transform.localPosition.x, targetClamped, head.transform.localPosition.z);
+            currentJawIntensity = targetClamped;
 
             jawMoving = false;
-
-            yield return null;
         }
-        */
 
-            /*
-        public void Move(float moveIntensity)
+
+
+
+        /*    public void AttackBehaviour()
+             {
+                 if (!attacking || jawMoving)
+                     return;
+
+                 switch (currentAttack)
+                 {
+                     #region Bullet Mouth
+                     case VictorAttacks.BulletMouth:
+                         lookAt = true;
+                         shootNode.transform.LookAt(thePlayer.transform.position);
+
+                         if (!canAttack && !waiting)
+                         {
+                             attackDelay = (thePlayer.dodgingCoolDown <= 0 ? UnityEngine.Random.Range(0.5f, 1.7f) : thePlayer.dodgingCoolDown / 30);
+                             waiting = true;
+                             break;
+                         }
+
+                         if (waiting && !canAttack)
+                             if (attackDelay <= 0)
+                             {
+                                 canAttack = true;
+                                 waiting = false;
+                             }
+
+                         if (canAttack)
+                             if (attackDelay <= 0)
+                             {
+                                 if (nrOfAttacks != 0)
+                                 {
+                                     root.getBullet(shootNode.transform.position, Quaternion.LookRotation(shootNode.transform.forward));
+
+                                     BulletScript bulletScript = this.root.getBulletScript();
+                                     bulletScript.bulletStrength = 0.35f;
+                                     bulletScript.bulletSpeed = 10f;
+                                     bulletScript.friendly = false;
+                                     bulletScript.doPostSetup();
+
+                                     nrOfAttacks--;
+
+                                     switch (root.difficultyMode)
+                                     {
+                                         case 0:
+                                             attackDelay = 0.2f;
+                                             break;
+                                         case 1:
+                                             goto case 0;
+                                         case 2:
+                                             attackDelay = 0.1f;
+                                             break;
+                                     }
+                                     break;
+                                 }
+                                 else
+                                 {
+                                     attacking = false;
+                                     lookAt = false;
+                                     SetJaw(-currentJawIntensity);
+                                     break;
+                                 }
+                             }
+
+                         break;
+                     #endregion
+                     #region Little Heads
+                     case VictorAttacks.LittleHeads:
+                         lookAt = true;
+                         shootNode.transform.LookAt(thePlayer.transform.position);
+
+                         if (!canAttack && !waiting)
+                         {
+                             attackDelay = 2;
+                             waiting = true;
+                             break;
+                         }
+
+                         if (waiting && !canAttack)
+                             if (attackDelay <= 0)
+                             {
+                                 canAttack = true;
+                                 waiting = false;
+                             }
+
+                         if (canAttack)
+                         {
+                             if (attackDelay <= 0)
+                             {
+                                 if (nrOfAttacks != 0)
+                                 {
+                                     GameObject miniVic = Instantiate(MFPClassicAssets.miniVictor);
+                                     miniVic.transform.position = new Vector3(shootNode.transform.position.x, shootNode.transform.position.y, miniVic.transform.position.z);
+
+                                     victorHeads.Add(miniVic.transform);
+
+                                     attackDelay = 0.5f;
+                                     nrOfAttacks--;
+                                 }
+                                 else
+                                 {
+                                     lookAt = false;
+                                     attacking = false;
+                                     SetJaw(-currentJawIntensity);
+                                     break;
+                                 }
+                             }
+                         }
+
+
+                         break;
+                         #endregion
+
+                 }
+             }
+
+             public void Update()
+             {
+
+                 if (Input.GetKeyDown(KeyCode.M))
+                     NewAttack(VictorAttacks.LittleHeads);
+                 if (Input.GetKeyDown(KeyCode.V))
+                     StartCoroutine(MoveJawSmooth(0));
+
+                 /*  if (!forceJawInstant)
+                       head.transform.position = new Vector3(head.transform.position.x, Vector2.Lerp(head.transform.position, headLerpPoint.transform.position, 0.05f).y, head.transform.position.z);
+                   else
+                   {
+                       bool wasLookat = lookAt;
+
+                       forceJawInstant = false;
+                       lookAt = false;
+                       head.transform.position = new Vector3(head.transform.position.x, headLerpPoint.transform.position.y, head.transform.position.z);
+
+                       if(wasLookat)
+                           lookAt = true;
+                   }
+                   */
+
+
+        /*
+        if (currentJawIntensity != targetJawIntensity)
         {
-            jaw.localScale += new Vector3(0, moveIntensity / 6, 0);
-            head.transform.position += new Vector3(0, moveIntensity, 0);
+            float diff = targetJawIntensity - currentJawIntensity;
 
-            currentJawIntensity += moveIntensity;
+            if (diff > -0.15f && diff < 0.15f)
+            {
+                jawMoving = false;
+                Move(diff);
+            }
+            else
+                jawMoving = true;
+
+            float moveAmount = (targetJawIntensity <= 0.15f ? 0.05f : 0.1f); /*(targetJawIntensity <= 0.15f ? 0.1f : targetJawIntensity / 24);
+
+
+
+            if (jawMoving)
+            {
+                headPivot.transform.rotation = defaultHeadRotation;
+
+                if (currentJawIntensity < targetJawIntensity)
+                    Move(moveAmount);
+
+                if (currentJawIntensity > targetJawIntensity)
+                    Move(-moveAmount);
+            }
+            MFPEditorUtils.Log(currentJawIntensity.ToString() + " " + targetJawIntensity.ToString() + " " + moveAmount.ToString() + " " + diff.ToString());
 
         }
-        */
+        else
+            jawMoving = false;
+
+
+
+        if (lookAt)
+        {
+            Vector3 dir = (thePlayer.transform.position + new Vector3(60, 10, -25f)) - transform.position;
+
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            headPivot.transform.rotation = Quaternion.AngleAxis(angle, -Vector3.forward);
+
+
+            debugPos = dir;
+        }
+
+    }
+    */
+
+
+        /*     public void FixedUpdate()
+             {
+                 if (attacking)
+                     attackDelay -= Time.deltaTime;
+                 else
+                     attackDelay = 0;
+
+             }
+             */
+
 
     }
 }

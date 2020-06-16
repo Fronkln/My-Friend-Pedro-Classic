@@ -33,10 +33,11 @@ namespace MFPClassic
                             speed = 0.33f;
                             break;
                         case 1:
-                            speed = 0.66f;
+                            speed = 0.55f;
                             break;
                         case 2:
-                            goto case 1;
+                            speed = 0.66f;
+                            break;
                     }
 
                     transform.position = Vector2.MoveTowards(transform.position, thePlayer.transform.position, speed);

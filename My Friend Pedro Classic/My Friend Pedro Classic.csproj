@@ -102,6 +102,7 @@
   <ItemGroup>
     <Compile Include="BossFight\FinalBattleController.cs" />
     <Compile Include="BossFight\MiniVictor.cs" />
+    <Compile Include="BossFight\SimpleTrackPlayer.cs" />
     <Compile Include="ClearInstructionsOnTrigger.cs" />
     <Compile Include="CustomZPusher.cs" />
     <Compile Include="ElevatorScript.cs" />

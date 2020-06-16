@@ -34,6 +34,9 @@ namespace MFPClassic
             playerScript = (PlayerScript)GameObject.Find("Player").GetComponent(typeof(PlayerScript));
             playerInput = ReInput.players.GetPlayer(0);
 
+
+            gameObject.AddComponent<BoxCollider>();
+
             // theSound = (AudioSource)GetComponent(typeof(AudioSource));
             transform.parent = GameObject.Find("Player/PlayerGraphics/Armature/Center/LowerBack/UpperBack/Neck/Head").transform;
             transform.localPosition = new Vector3(-0.226f, 0.0f, 0.007f);
@@ -100,7 +103,10 @@ namespace MFPClassic
         {
             if (other.GetComponent<AutoControlZoneScript>())
                 if (other.GetComponent<AutoControlZoneScript>().jump)
+                {
+                    Destroy(GetComponent<BoxCollider>());
                     flyingOverride = false;
+                }
         }
 
         

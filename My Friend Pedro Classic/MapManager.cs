@@ -284,12 +284,6 @@ namespace MFPClassic
                 foreach (Light l in GameObject.Find("MFPLevel").GetComponentsInChildren<Light>())
                     l.range -= 10;
 
-            if (Input.GetKeyDown(KeyCode.H))
-                MFPClassicAssets.root.doCheckpointSave = true;
-
-            if (Input.GetKeyDown(KeyCode.N))
-                MFPClassicAssets.root.doCheckpointLoad = true;
-
             if (Input.GetKeyDown(KeyCode.I))
                 GameObject.FindObjectOfType<LevelChangerScript>().doTheThing();
 #endif
@@ -667,6 +661,8 @@ namespace MFPClassic
                     enemies[1].standStillInHuntMode = true;
 
                     enemies[3].faceRight = true;
+                    enemies[3].standStillInHuntMode = true;
+                    enemies[3].standStill = true;
 
                     enemies[4].faceRight = true;
                     enemies[4].standStill = true;
@@ -715,6 +711,18 @@ namespace MFPClassic
                     finalBattle.startSwitch = arenaZone.GetSwitch();
 
                     new GameObject().AddComponent<CheckpointScript>().triggerFromSwitch = arenaZone.GetSwitch();
+
+
+                    GameObject.Find("HorizonBackground_Theme_1/Background Camera").GetComponent<BackgroundCameraScript>().enabled = false;
+                    MFPClassicAssets.player.curCameraPublic.enabled = false;
+                    //Rootscriptin mainCamera fieldini değiştirmek için burada reflection kullanman lazım.
+
+
+                   GameObject fightCam = GameObject.Find("MFPLevel/FightCamera");
+                    fightCam.AddComponent<SimpleTrackPlayer>();
+
+                    MFPClassicAssets.player.curCameraPublic = fightCam.GetComponent<Camera>();
+                    MFPClassicAssets.player.curCameraPublic.gameObject.AddComponent<CameraScript>();
 
 
                     isBossLevel = true;
