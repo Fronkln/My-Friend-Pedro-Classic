@@ -9,13 +9,17 @@ namespace MFPClassic
 {
     public class FinalBattleController : MonoBehaviour
     {
+        public static FinalBattleController inst;
+
         public SwitchScript startSwitch;
         public Victor victorBoss;
 
+        public Canvas bossfightUI;
 
         public static Vector3 playerPosHack;
 
         private bool startBattleDoOnce = false;
+        public bool battleStarted = false;
 
         IEnumerator WaitPlayerWings()
         {
@@ -25,7 +29,10 @@ namespace MFPClassic
 
         public void Awake()
         {
+            inst = this;
             victorBoss = GameObject.FindObjectOfType<Victor>();
+            bossfightUI = GameObject.Find("MFPLevel/BossfightUI").GetComponent<Canvas>();
+            bossfightUI.enabled = false;
         }
 
         public void Update()

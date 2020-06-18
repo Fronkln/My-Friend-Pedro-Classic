@@ -8,7 +8,7 @@ namespace MFPClassic
         Victor vic;
         AudioClip footStep;
 
-        int doSteps = 6;
+        int doSteps = 5;
 
 
         public void Awake()
@@ -32,8 +32,11 @@ namespace MFPClassic
 
             if (doSteps != 0)
                 vic.victorAnimator.Play("movetoScene", 0, 0);
-           else
-                MFPClassicAssets.root.doCheckpointSave = true;
+            else
+            {
+                FinalBattleController.inst.bossfightUI.enabled = true;
+                FinalBattleController.inst.battleStarted = true;
+            }
         }
     }
 }

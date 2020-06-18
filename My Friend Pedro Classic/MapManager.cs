@@ -713,16 +713,7 @@ namespace MFPClassic
                     new GameObject().AddComponent<CheckpointScript>().triggerFromSwitch = arenaZone.GetSwitch();
 
 
-                    GameObject.Find("HorizonBackground_Theme_1/Background Camera").GetComponent<BackgroundCameraScript>().enabled = false;
-                    MFPClassicAssets.player.curCameraPublic.enabled = false;
-                    //Rootscriptin mainCamera fieldini değiştirmek için burada reflection kullanman lazım.
-
-
-                   GameObject fightCam = GameObject.Find("MFPLevel/FightCamera");
-                    fightCam.AddComponent<SimpleTrackPlayer>();
-
-                    MFPClassicAssets.player.curCameraPublic = fightCam.GetComponent<Camera>();
-                    MFPClassicAssets.player.curCameraPublic.gameObject.AddComponent<CameraScript>();
+                    GameObject.FindObjectOfType<CameraScript>().gameObject.AddComponent<SimpleTrackPlayer>();
 
 
                     isBossLevel = true;

@@ -9,13 +9,13 @@ namespace MFPClassic
     public class SimpleTrackPlayer : MonoBehaviour
     {
         private PlayerScript player;
-        private Vector3 finalPos = Vector3.zero;
-        private Quaternion startRot;
+        private CameraScript camscript;
+
 
         void Start()
         {
+            camscript = GetComponent<CameraScript>();
             player = PlayerScript.PlayerInstance;
-            startRot = transform.rotation;
 
             MFPClassicAssets.rootShared.modSideOnCamera = true;
         }
@@ -23,7 +23,7 @@ namespace MFPClassic
         void LateUpdate()
         {
             if (player.overrideControls) //player is in auto control zone
-                transform.position = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+                camscript.centerCamPosOnPlayer();
 
             //transform.rotation = startRot;
         }

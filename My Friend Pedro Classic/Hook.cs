@@ -162,7 +162,7 @@ namespace MFPClassic
                 if (Input.GetKeyDown(KeyCode.O))
                     doLoad = (doLoad ? false : true);
                 if (Input.GetKeyDown(KeyCode.P))
-                     SceneManager.LoadScene(12);
+                     SceneManager.LoadScene(52);
 #endif
             }
         }
