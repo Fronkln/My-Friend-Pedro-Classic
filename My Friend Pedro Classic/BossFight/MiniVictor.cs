@@ -108,33 +108,7 @@ namespace MFPClassic
 
                             PlayerScript.PlayerInstance.pickedUpWeapon(rndWeapon);
 
-                            /* GameObject droppedWeapon = Instantiate(MFPClassicAssets.WeaponPickerSample);
-                             droppedWeapon.layer = 22;
-
-                             if (droppedWeapon.transform.parent != null)
-                             {
-                                 Transform parent = droppedWeapon.transform.parent;
-                                 droppedWeapon.transform.parent = null;
-
-                                 Destroy(parent.gameObject);
-                             }
-
-                             droppedWeapon.transform.position = transform.position;
-
-                             WeaponPickupScript weaponPickupScript = droppedWeapon.GetComponent<WeaponPickupScript>();
-
-                             int rndWeapon = UnityEngine.Random.Range(3, 7);
-
-                             weaponPickupScript.weapon = rndWeapon;
-
-                             weaponPickupScript.enabled = true;
-                             weaponPickupScript.doSetup();
-
-                             droppedWeapon.AddComponent<SkyfallObjectScript>().skyfallYPos = transform.position.y;
-                             */
-
                         }
-
                         Destroy(gameObject);
                     }
 

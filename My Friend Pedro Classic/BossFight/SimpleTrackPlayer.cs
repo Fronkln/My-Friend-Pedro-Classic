@@ -17,6 +17,12 @@ namespace MFPClassic
             camscript = GetComponent<CameraScript>();
             player = PlayerScript.PlayerInstance;
 
+            if (MFPClassicAssets.rootShared.modSideOnCamera)
+            {
+                FinalBattleController.inst.playerAlreadyHadEnabledSideCam = true;
+                return;
+            }
+
             MFPClassicAssets.rootShared.modSideOnCamera = true;
         }
 

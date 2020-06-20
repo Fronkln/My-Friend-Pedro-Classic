@@ -1108,11 +1108,16 @@ public class OptionsMenuScript : MonoBehaviour
         this.createOption(5, this.rootShared.GetTranslation("mLvl5"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
         this.createOption(7, this.rootShared.GetTranslation("mAgren"), string.Empty, TextAnchor.MiddleRight, false, false, (float)0);
 
-        int @int = SavedData.GetInt("levelSelectMaxNr");
+        int @int = 0;
+
+        if (PlatformPlayerPrefs.HasKey("mfpClassicUnlockedLevels"))
+            @int = PlatformPlayerPrefs.GetInt("mfpClassicUnlockedLevels");
+
         for (int i = 0; i <= 7; i++)
         {
             if (this.getLevelSelectLevelNr(i) > @int)
             {
+                MFPClassic.MFPEditorUtils.Log("Level select nr: " + getLevelSelectLevelNr(i).ToString() + " " + @int.ToString());
                 this.disableOption[i] = true;
             }
         }

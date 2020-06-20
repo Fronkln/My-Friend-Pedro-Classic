@@ -23,7 +23,7 @@ namespace MFPClassic
         public static bool devMode
         {
 #if DEBUG
-    get{return true;}
+            get { return true; }
 #elif !DEBUG
             get { return false; }
 #endif
@@ -38,6 +38,20 @@ namespace MFPClassic
         {
             // PrepareMenu();
 
+
+            MFPEditorUtils.ClearLog();
+
+#if DEBUG
+            MFPEditorUtils.InitGUILogging();
+#endif
+
+
+            if (PlatformPlayerPrefs.HasKey("mfpClassicCurrentLevel"))
+            {
+                MapManager.currentLevel = PlatformPlayerPrefs.GetInt("mfpClassicCurrentLevel");
+                MFPEditorUtils.Log("got cur level");
+            }
+
             if (doAssetReload)
             {
                 AssetBundle.UnloadAllAssetBundles(true);
@@ -48,7 +62,6 @@ namespace MFPClassic
             if (MFPClassicAssets.classicBundle == null)
             {
                 MFPClassicAssets.classicBundle = AssetBundle.LoadFromFile(MFPEditorUtils.LoadFile("mfpclassic"));
-
                 MFPClassicAssets.LoadAssets();
             }
 
@@ -88,10 +101,14 @@ namespace MFPClassic
                 MFPEditorUtils.CreateTranslation("pedro02_level1_MFPClassic", "Would you look at this...|Somebody placed these boxes RIGHT in our way!|People have no respect these days.|You're going to have to jump over them.");
                 MFPEditorUtils.CreateTranslation("pedro03_level1_MFPClassic", "Look!|I bet he's the one who put the boxes in our way.|Let's teach him a lesson!|Shoot him in the head.|Don't worry, he is totally asking for it!");
 
-              /*Shoot the tutorial enemy*/MFPEditorUtils.CreateTranslation("pedro04a_level1_MFPClassic", "Nice shooting back there!|You're doing great!|Now. Look here.|You need to do a wall jump off of that wall.|Remember, timing is important!");
-             /*Stab the tutorial enemy*/MFPEditorUtils.CreateTranslation("pedro04b_level1_MFPClassic", "Nice stabbing back there! Guns are overrated anyway.|You're doing great!|Now. Look here.|You need to do a wall jump off of that wall.|Remember, timing is important!");
-             /*Kick the tutorial enemy*/MFPEditorUtils.CreateTranslation("pedro04c_level1_MFPClassic", "Nice kicks! Your martial arts training paid off.|You're doing great!|Now. Look here.|You need to do a wall jump off of that wall.|Remember, timing is important!");
-             /*Flee the tutorial enemy*/MFPEditorUtils.CreateTranslation("pedro04d_level1_MFPClassic", "Are you insane?!|That thug is not your friend!|Get back there and kill him before he alerts others!");
+                /*Shoot the tutorial enemy*/
+                MFPEditorUtils.CreateTranslation("pedro04a_level1_MFPClassic", "Nice shooting back there!|You're doing great!|Now. Look here.|You need to do a wall jump off of that wall.|Remember, timing is important!");
+                /*Stab the tutorial enemy*/
+                MFPEditorUtils.CreateTranslation("pedro04b_level1_MFPClassic", "Nice stabbing back there! Guns are overrated anyway.|You're doing great!|Now. Look here.|You need to do a wall jump off of that wall.|Remember, timing is important!");
+                /*Kick the tutorial enemy*/
+                MFPEditorUtils.CreateTranslation("pedro04c_level1_MFPClassic", "Nice kicks! Your martial arts training paid off.|You're doing great!|Now. Look here.|You need to do a wall jump off of that wall.|Remember, timing is important!");
+                /*Flee the tutorial enemy*/
+                MFPEditorUtils.CreateTranslation("pedro04d_level1_MFPClassic", "Are you insane?!|That thug is not your friend!|Get back there and kill him before he alerts others!");
 
                 MFPEditorUtils.CreateTranslation("pedro05_level1_MFPClassic", "Excellent! You're a natural at this.|See that narrow opening under this machine?|Let's try rolling into it!");
                 MFPEditorUtils.CreateTranslation("pedro06_level1_MFPClassic", "Wonderful!|There's only one more trick i have to teach you now.|Remember all those pills you were forced to take..?|Well, they seem to have had a nice side effect...|You can slow down your perception of time!|Isn't that cool?!|While slowing down time you can perform stunts in the air.|You'll look like a total bad-ass!");
@@ -100,13 +117,6 @@ namespace MFPClassic
             }
             else
                 return;
-
-            MFPEditorUtils.ClearLog();
-
-#if DEBUG
-            MFPEditorUtils.InitGUILogging();
-#endif
-
 
             MFPEditorUtils.Log("Game patched");
 
@@ -151,18 +161,21 @@ namespace MFPClassic
             [HarmonyPostfix]
             static void DebugOptions()
             {
-                
-                if(Input.GetKeyDown(KeyCode.U))
+                if (Input.GetKeyDown(KeyCode.U))
                 {
                     doAssetReload = true;
                     Hook.Initialize();
                 }
 
 #if DEBUG
+
+                if (Input.GetKeyDown(KeyCode.Z))
+                    GameObject.FindObjectOfType<OptionsMenuScript>().buildDebugMenu();
+
                 if (Input.GetKeyDown(KeyCode.O))
                     doLoad = (doLoad ? false : true);
                 if (Input.GetKeyDown(KeyCode.P))
-                     SceneManager.LoadScene(52);
+                    SceneManager.LoadScene(52);
 #endif
             }
         }
@@ -200,7 +213,7 @@ namespace MFPClassic
         }
         #endregion
 
-   
+
         [HarmonyPatch(typeof(PlayerScript))]
         [HarmonyPatch("updateHealthHUD")]
         private class RootScriptLoadProgress
@@ -252,10 +265,10 @@ namespace MFPClassic
 
                 if (!doLoad)
                     return;
-                
+
 
                 MFPEditorUtils.Log(MFPClassicAssets.player.transform.position.x.ToString() + " " + MFPClassicAssets.player.transform.position.y.ToString() + " " + MFPClassicAssets.player.transform.position.z.ToString());
-                
+
                 if (GameObject.FindObjectOfType<AutoControlZoneScript>())
                     GameObject.Destroy(GameObject.FindObjectOfType<AutoControlZoneScript>().gameObject);
 
@@ -315,10 +328,20 @@ namespace MFPClassic
             [HarmonyPostfix]
             static void KnifeFix(PlayerScript __instance)
             {
-                if(!__instance.weaponActive[0])
+                if (!__instance.weaponActive[0])
                 {
                     __instance.weaponActive[0] = true;
                     GameObject.FindObjectOfType<UIWeaponSelectorScript>().prepareUI();
+                }
+            }
+
+            [HarmonyPostfix]
+            static void NoAssaultGrenades(PlayerScript __instance)
+            {
+                if (__instance.secondaryAmmo[5] > 0)
+                {
+                    __instance.secondaryAmmo[5] = 0;
+                    __instance.updateAmmoHUD();
                 }
             }
         }
@@ -327,6 +350,8 @@ namespace MFPClassic
         [HarmonyPatch("Start")]
         private class PlayerScriptStartPatch
         {
+
+
             [HarmonyPostfix]
             static void PlayerSetup(PlayerScript __instance, ref AudioClip[] ___weaponSound)
             {
@@ -340,7 +365,7 @@ namespace MFPClassic
                 __instance.weaponSound = MFPClassicAssets.weaponSound;
                 __instance.setGunSound();
 
-#region Web-ify the HUD
+                #region Web-ify the HUD
                 Image healthBar1HUD = GameObject.Find("HUD/Canvas/HealthAndSlowMo/HealthBar/HealthBar1/Bar").GetComponent<Image>();
                 Image healthBar3HUD = GameObject.Find("HUD/Canvas/HealthAndSlowMo/HealthBar/HealthBar3/Bar").GetComponent<Image>();
 
@@ -402,7 +427,7 @@ namespace MFPClassic
 
                 // healthBar.GetComponent<RectTransform>().transform.position = new Vector3(1230, 0);
                 // healthBar.GetComponent<RectTransform>().localPosition += Vector3.right * 10;
-#endregion
+                #endregion
 
                 if (!doLoad)
                     return;
@@ -426,19 +451,7 @@ namespace MFPClassic
             }
         }
 
-#if DEBUG
-        [HarmonyPatch(typeof(LevelChangerScript))]
-        [HarmonyPatch("Update")]
-        private class LevelChangerUpdatePatch
-        {
-            [HarmonyPostfix]
-            static void Test()
-            {
 
-            }
-        }
-
-#endif
         [HarmonyPatch(typeof(LevelChangerScript))]
         [HarmonyPatch("Start")]
         private class LevelChangerStartPatch
@@ -483,8 +496,8 @@ namespace MFPClassic
                 SkinnedMeshRenderer torsorRenderer = torsor.AddComponent<SkinnedMeshRenderer>();
                 torsorRenderer.sharedMesh = MFPClassicAssets.classicBundle.LoadAsset("TorsoLongCoatAndHoodie") as Mesh;
                 torsorRenderer.sharedMaterial = MFPClassicAssets.classicBundle.LoadAsset("torsor_long_coat_and_hoodie") as Material;
-             //   torsorRenderer.sharedMaterial.mainTexture = MFPClassicAssets.classicBundle.LoadAsset("torsor_long_coat_and_hoodie_tex") as Texture;
-               // torsorRenderer.sharedMaterial.SetTexture("_BumpMap", MFPClassicAssets.classicBundle.LoadAsset("torsor_long_coat_and_hoodie_normal") as Texture);
+                //   torsorRenderer.sharedMaterial.mainTexture = MFPClassicAssets.classicBundle.LoadAsset("torsor_long_coat_and_hoodie_tex") as Texture;
+                // torsorRenderer.sharedMaterial.SetTexture("_BumpMap", MFPClassicAssets.classicBundle.LoadAsset("torsor_long_coat_and_hoodie_normal") as Texture);
 
                 torsorRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
                 torsorRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
@@ -513,7 +526,7 @@ namespace MFPClassic
                 torsorRenderer.updateWhenOffscreen = true;
 
                 originalRenderer.enabled = false;
-#endregion
+                #endregion
 
 
                 foreach (SkinnedMeshRenderer rend in MFPClassicAssets.player.GetComponentsInChildren<SkinnedMeshRenderer>())

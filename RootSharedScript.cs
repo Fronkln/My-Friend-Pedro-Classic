@@ -488,8 +488,10 @@ public class RootSharedScript : MonoBehaviour
             case 6:
                 lhs = "mfpclassic-5";
                 break;
+            case 7:
+                goto case 8;
             case 8:
-                lhs = "mfpclassic-6";
+                lhs = "mfpclassic-6_new_delete_old_pls_im_sorryn";
                 break;
 
             default:
@@ -499,10 +501,11 @@ public class RootSharedScript : MonoBehaviour
 
         if (!givePlain)
         {
-            if (this.speedrunnerLeaderboard)
-                lhs = RuntimeServices.op_Addition(lhs, "t");
-            else if (idCheck != "-999")
-                lhs = RuntimeServices.op_Addition(lhs, "n");
+            //speedrunner leaderboard not allowed in MFP Classic
+            //  if (this.speedrunnerLeaderboard)
+            //    lhs = RuntimeServices.op_Addition(lhs, "t");
+            //   else if (idCheck != "-999")
+            lhs = RuntimeServices.op_Addition(lhs, "n");
         }
         if (givePlain && lhs != string.Empty)
             lhs = lhs.Remove(0, 1);

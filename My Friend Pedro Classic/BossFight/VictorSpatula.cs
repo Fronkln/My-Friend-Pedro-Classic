@@ -38,6 +38,12 @@ namespace MFPClassic
 
                     player.xSpeed += direction.x * 10;
                     player.ySpeed -= direction.y * 10;
+
+                    player.bulletHit = true;
+                    player.bulletStrength = 0.7f;
+                    player.bulletHitVel = Vector3.zero;
+                    player.bulletHitRotation = transform.rotation;
+                    player.bulletHitDoSound = true;
                 }
             }
         }

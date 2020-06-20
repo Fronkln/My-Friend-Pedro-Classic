@@ -727,6 +727,19 @@ public class LevelCompleteScreenScript : MonoBehaviour
                 num7 = 1;
             }
             int buildIndex = MFPClassic.MapManager.currentLevel - 1;
+            PlatformPlayerPrefs.SetInt("mfpClassicCurrentLevel", MFPClassic.MapManager.currentLevel);
+
+            if (PlatformPlayerPrefs.HasKey("mfpClassicUnlockedLevels"))
+            {
+                int maxUnlockedLevel = PlatformPlayerPrefs.GetInt("mfpClassicUnlockedLevels");
+
+                if (maxUnlockedLevel < MFPClassic.MapManager.currentLevel)
+                    PlatformPlayerPrefs.SetInt("mfpClassicUnlockedLevels", MFPClassic.MapManager.currentLevel);
+            }
+            else
+                PlatformPlayerPrefs.SetInt("mfpClassicUnlockedLevels", MFPClassic.MapManager.currentLevel);
+
+
             float bestScoreForLevel = this.rootShared.GetBestScoreForLevel(buildIndex, false);
             if ((double)nr1 > (double)bestScoreForLevel)
                 this.newRecord = true;

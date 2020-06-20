@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.PostProcessing;
+using TMPro;
 
 namespace MFPClassic
 {
@@ -76,6 +74,8 @@ namespace MFPClassic
 
         public static Material whiteEnemyBlackShirt, blackEnemyBlackShirt;
 
+
+        public static TextMeshProUGUI secondaryAmmoText;
 
         public static void LoadAssets()
         {

@@ -45,12 +45,12 @@ namespace MFPClassic
 
         private float currentJawIntensity = 1.128f;
 
-        public float jawSpeed = 0.03f;
+        public float jawSpeed { get { return 0.03f * root.timescale; } }
 
         public readonly float jawMin = 1.128f;
         public readonly float jawMax = 1.994f;
 
-        public readonly float swingSpeed = 1.2f;
+        public float swingSpeed { get { return 1.2f * root.timescale; } }
 
         public bool jawMoving = false;
 
@@ -66,18 +66,12 @@ namespace MFPClassic
 
         private bool cancelJawDoOnce = false;
 
-        private Image healthBar;
+        public Image healthBar;
 
         private VictorSpatula spatula;
 
-
-        [HideInInspector] public List<Transform> victorHeads = new List<Transform>();
-
-
-
         public void Start()
         {
-
             //eğer boss aniden çalışmamaya başlarsa burdaki koda ilk göz at, belki isim değiştirmişsindir.
 
             root = MFPClassicAssets.root;
@@ -123,11 +117,16 @@ namespace MFPClassic
         public void Hurt(BulletScript bullet)
         {
 
+            if (health <= 0)
+                return;
+
             health -= (bullet.bulletStrength * 0.01f);
             MFPEditorUtils.Log("Ouch! my new health is: " + health.ToString());
 
             healthBar.fillAmount = health;
 
+            if (health <= 0)
+                FinalBattleController.inst.OnVictorDeath();
         }
 
 
@@ -141,11 +140,6 @@ namespace MFPClassic
 
             if (Input.GetKeyDown(KeyCode.M))
                 StartCoroutine(DoAttack(VictorAttacks.Spatula));
-
-            if (Input.GetKeyDown(KeyCode.Z))
-                MFPEditorUtils.Log(attacking.ToString() + " " + bursting.ToString());
-
-
 
             if (debugAuto)
                 if (!attacking && !bursting && FinalBattleController.inst.battleStarted)

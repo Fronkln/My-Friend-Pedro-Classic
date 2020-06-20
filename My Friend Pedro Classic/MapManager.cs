@@ -189,11 +189,6 @@ namespace MFPClassic
             if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
                 MFPClassicAssets.player.health = 1f;
 
-            if (GameObject.FindObjectOfType<UIWeaponSelectorScript>())
-            {
-                UIWeaponSelectorScript sc = GameObject.FindObjectOfType<UIWeaponSelectorScript>();
-
-            }
 
             inst = this;
 
@@ -209,6 +204,10 @@ namespace MFPClassic
             PreparePostProcess();
 
             // SceneManager.LoadScene(MFPClassicAssets.classicLevelsBundle.GetAllScenePaths()[0], LoadSceneMode.Additive);
+
+            //cutscene for bossfight not done yet
+            if (currentLevel == 7) currentLevel = 8;
+
             GameObject map = GameObject.Instantiate(MFPClassicAssets.classicBundle.LoadAsset("MFPLevel" + currentLevel.ToString()) as GameObject);
             map.name = "MFPLevel";
 
