@@ -38,14 +38,12 @@ namespace MFPClassic
         {
             // PrepareMenu();
 
-
+       
             MFPEditorUtils.ClearLog();
 
 #if DEBUG
             MFPEditorUtils.InitGUILogging();
 #endif
-
-
             if (PlatformPlayerPrefs.HasKey("mfpClassicCurrentLevel"))
             {
                 MapManager.currentLevel = PlatformPlayerPrefs.GetInt("mfpClassicCurrentLevel");

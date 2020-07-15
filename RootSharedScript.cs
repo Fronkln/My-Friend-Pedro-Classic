@@ -245,7 +245,10 @@ public class RootSharedScript : MonoBehaviour
                 float num1 = new float();
                 float num2 = !this.speedrunnerLeaderboard ? this.GetBestScoreForLevel(this.curUploadAllScores, true) : this.GetBestTimeForLevel(this.curUploadAllScores) * 1000f;
                 if ((double)num2 > 0.0 && (double)num2 < 9999999.0)
+                {
                     this.steamLeaderboardsScript.DoUploadScore((int)num2, leaderboardName);
+                    MFPClassic.MFPEditorUtils.Log("Uploading leaderboard score for:" + leaderboardName);
+                }
             }
             ++this.curUploadAllScores;
         }
@@ -491,7 +494,8 @@ public class RootSharedScript : MonoBehaviour
             case 7:
                 goto case 8;
             case 8:
-                lhs = "mfpclassic-6_new_delete_old_pls_im_sorryn";
+                MFPClassic.MFPEditorUtils.Log("Requested bossfight leaderboard");
+                lhs = "mfpclassic-6_new_delete_old_pls_im_sorry";
                 break;
 
             default:

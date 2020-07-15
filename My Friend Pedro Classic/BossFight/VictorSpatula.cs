@@ -36,8 +36,9 @@ namespace MFPClassic
                     Vector3 direction = other.contacts[0].point - player.transform.position;
                     direction = -direction;
 
-                    player.xSpeed += direction.x * 10;
-                    player.ySpeed -= direction.y * 10;
+                    //causes glitches often
+                   // player.xSpeed += direction.x * 10;
+                   // player.ySpeed -= direction.y * 10;
 
                     player.bulletHit = true;
                     player.bulletStrength = 0.7f;

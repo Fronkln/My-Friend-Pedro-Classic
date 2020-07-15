@@ -178,7 +178,7 @@ namespace MFPClassic
         public static void FixPlayerLoadout()
         {
 
-            if (MFPClassicAssets.rootShared != null && MFPClassicAssets.rootShared.modAllWeapons)
+            if (MFPClassicAssets.rootShared.modAllWeapons)
                 return;
 
 #if !DEBUG
@@ -232,8 +232,9 @@ namespace MFPClassic
                 case 5:
                     if (MFPClassicAssets.rootShared.levelLoadedFromLevelSelectScreen)
                     {
-                        UnlockWeapons(1, 5);
-                        MFPClassicAssets.player.changeWeapon(5);
+                        UnlockWeapons(1, 6);
+                        MFPClassicAssets.player.changeWeapon(6);
+                        MFPClassicAssets.player.weaponActive[5] = false;
                     }
                     break;
                 case 6:

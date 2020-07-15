@@ -15,6 +15,7 @@ namespace MFPClassic
         public static MapManager inst;
 
         public static int currentLevel = 1;
+        private int optimalPixelLightAmount = 5;
         public bool isBossLevel = false;
 
         public List<EnemyScript> enemies = new List<EnemyScript>();
@@ -182,6 +183,10 @@ namespace MFPClassic
             postProcess.profile.vignette.settings = vignet;
             postProcess.profile.bloom.settings = bloomSettings;
 
+
+            //VERY QUESTIONABLE CHANGE BUT WHAT CAN YOU DO
+            if (QualitySettings.pixelLightCount < optimalPixelLightAmount)
+                QualitySettings.pixelLightCount = optimalPixelLightAmount;
         }
 
         void Awake()
@@ -214,6 +219,9 @@ namespace MFPClassic
             if (currentLevel != 8)
                 map.transform.position = new Vector3(9999, 9999, map.transform.position.z);
 
+#if !DEBUG
+            Instantiate(MFPClassicAssets.classicBundle.LoadAsset("alphaUI") as GameObject);
+#endif
 
             RenderSettings.ambientIntensity = 0;
             RenderSettings.ambientEquatorColor = Color.black;
@@ -245,7 +253,7 @@ namespace MFPClassic
 
 
             if (RootScript.RootScriptInstance.paused)
-                if (postProcess.profile.colorGrading.enabled)
+                if (postProcess.profile.colorGrading.enabled || QualitySettings.pixelLightCount < optimalPixelLightAmount)
                     PreparePostProcess();
 
 

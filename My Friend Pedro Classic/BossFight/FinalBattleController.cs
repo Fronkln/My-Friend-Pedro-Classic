@@ -1,9 +1,6 @@
-﻿using System;
+﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace MFPClassic
 {
@@ -15,6 +12,7 @@ namespace MFPClassic
         public Victor victorBoss;
 
         public Canvas bossfightUI;
+        private Text bossText;
         public RectTransform creditsRoot, youRect, winRect;
 
         public static Vector3 playerPosHack;
@@ -89,6 +87,7 @@ namespace MFPClassic
 
 
             creditsRoot = bossfightUI.transform.Find("CreditsRoot").GetComponent<RectTransform>();
+            bossText = bossfightUI.transform.Find("Text").GetComponent<Text>();
             youRect = creditsRoot.Find("YOU").GetComponent<RectTransform>();
             winRect = creditsRoot.Find("WIN").GetComponent<RectTransform>();
 
@@ -99,12 +98,6 @@ namespace MFPClassic
             bgCamera.GetComponent<Camera>().farClipPlane = 300;
             bgCamera.GetComponent<Camera>().enabled = false;
             bgCamera.transform.position += new Vector3(0,60,0);
-
-            Shader testShader = MFPClassicAssets.classicBundle.LoadAsset("SkyboxBlend") as Shader;
-
-            GameObject test = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            test.GetComponent<MeshRenderer>().material.shader = testShader;
-            test.transform.position = PlayerScript.PlayerInstance.transform.position;
 
             RenderSettings.skybox = MFPClassicAssets.classicBundle.LoadAsset("nightSky") as Material;
             //   GameObject.FindObjectOfType<CameraScript>().GetComponent<Camera>().clearFlags = CameraClearFlags.Skybox;
@@ -120,6 +113,7 @@ namespace MFPClassic
             victorBoss.health = 0;
             victorBoss.StopAllCoroutines();
             victorBoss.enabled = false;
+            bossText.enabled = false;
             victorBoss.healthBar.transform.parent.gameObject.SetActive(false);
 
 
