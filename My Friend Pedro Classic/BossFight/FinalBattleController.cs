@@ -25,12 +25,34 @@ namespace MFPClassic
 
         public bool playerAlreadyHadEnabledSideCam = false;
 
+
+        private bool deathTipDoOnce = false;
+
         private Transform bgCamera;
 
         IEnumerator WaitPlayerWings()
         {
             yield return new WaitForSeconds(2);
             MFPClassicAssets.player.gameObject.AddComponent<PlayerWings>();
+        }
+
+        IEnumerator WaitDeathTip(Victor.VictorAttacks deathAttack)
+        {
+            yield return new WaitForSecondsRealtime(2.8f);
+
+            switch (deathAttack)
+            {
+                case Victor.VictorAttacks.BulletMouth:
+                    MFPEditorUtils.doPedroHint("Try dodging when the bullets start coming.");
+                    break;
+                case Victor.VictorAttacks.LittleHeads:
+                    MFPEditorUtils.doPedroHint("Try reloading or using a faster weapon.");
+                    break;
+                case Victor.VictorAttacks.Spatula:
+                    MFPEditorUtils.doPedroHint("Perhaps stepping back before the spatula hits\n will work.");
+                    break;
+            }
+
         }
 
         IEnumerator DeathExplosions()
@@ -146,10 +168,15 @@ namespace MFPClassic
             MFPClassicAssets.player.propellerHat = true;
 
             if (victorBoss.health <= 0)
-            {
                 victorBoss.transform.Translate((-victorBoss.transform.up * Time.deltaTime * 4) * RootScript.RootScriptInstance.timescale);
-            }
 
+
+            if (PlayerScript.PlayerInstance.health <= 0)
+                if (!deathTipDoOnce)
+                {
+                    StartCoroutine(WaitDeathTip(victorBoss.currentAttack    ));
+                    deathTipDoOnce = true;
+                }
 
             if (startSwitch.output == 1)
             {

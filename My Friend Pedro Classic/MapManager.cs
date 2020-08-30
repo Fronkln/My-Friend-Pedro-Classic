@@ -351,8 +351,8 @@ namespace MFPClassic
                     InstructionTextScript instructions2 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsJump" }, false, false, true);
                     InstructionTextScript instructions3 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsShootPistol", "instructionsWeaponWheel", "instructionsKick" }, false, false, true);
                     InstructionTextScript instructions4 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsWallJump1", "instructionsWallJump2" }, false, false, true);
-                    InstructionTextScript instructions5 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsRoll" }, false, false, true);
-                    InstructionTextScript instructions6 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsFocus", "instructionsFlip" }, false, false, true);
+                    InstructionTextScript instructions5 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsRoll1", "instructionsRoll2" }, false, false, true);
+                    InstructionTextScript instructions6 = RuntimeEntities.CreateInstructionText(new GameObject(), new string[] { "instructionsFocus", "instructionsFlip1", "instructionsFlip2" }, false, false, true);
 
                     GameObject speech_Level1Trigger1 = GameObject.Find("MFPLevel/SpeechTriggers/trigger1");
                     GameObject speech_Level1Trigger2 = GameObject.Find("MFPLevel/SpeechTriggers/trigger2");
@@ -551,6 +551,9 @@ namespace MFPClassic
                     break;
 
                 case 4:
+
+                    GameObject.FindObjectOfType<BackgroundCameraScript>().transform.position += new Vector3(0, 0, 50);
+
                     SpawnDoorScript door1_level4 = RuntimeEntities.CreateEnemyDoor(GameObject.Find("MFPLevel/DoorSpawns/Door1").transform.position, 1);
                     SpawnDoorScript door2_level4 = RuntimeEntities.CreateEnemyDoor(GameObject.Find("MFPLevel/DoorSpawns/Door2").transform.position, 1);
                     SpawnDoorScript door3_level4 = RuntimeEntities.CreateEnemyDoor(GameObject.Find("MFPLevel/DoorSpawns/Door3").transform.position, 1);

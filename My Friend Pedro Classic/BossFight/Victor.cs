@@ -121,8 +121,6 @@ namespace MFPClassic
                 return;
 
             health -= (bullet.bulletStrength * 0.01f);
-            MFPEditorUtils.Log("Ouch! my new health is: " + health.ToString());
-
             healthBar.fillAmount = health;
 
             if (health <= 0)
@@ -290,6 +288,9 @@ namespace MFPClassic
                     //TODO: Maybe pool them?
                     while (nrOfHeads != 0)
                     {
+                        if (player.health <= 0)
+                            yield break;
+
                         GameObject miniVic = Instantiate(MFPClassicAssets.miniVictor);
                         miniVic.transform.position = new Vector3(shootNode.transform.position.x, shootNode.transform.position.y, miniVic.transform.position.z);
 

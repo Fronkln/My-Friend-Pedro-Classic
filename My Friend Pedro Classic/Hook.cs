@@ -81,8 +81,10 @@ namespace MFPClassic
                 MFPEditorUtils.CreateTranslation("instructionsPistol", "<PISTOL>   - Switch to your pistol");
                 MFPEditorUtils.CreateTranslation("instructionsKick", "<MELEE>   - Kick");
                 MFPEditorUtils.CreateTranslation("instructionsFocus", "<ACTION>   - Slow-down time");
-                MFPEditorUtils.CreateTranslation("instructionsRoll", "<CROUCH> + <LEFT> or <RIGHT>   - Roll");
-                MFPEditorUtils.CreateTranslation("instructionsFlip", "Hold <LEFT> or <RIGHT> mid-air    - Flip");
+                MFPEditorUtils.CreateTranslation("instructionsRoll1", "<CROUCH>   -  Crouch");
+                MFPEditorUtils.CreateTranslation("instructionsRoll2", "<LEFT> or <RIGHT>   - Roll");
+                MFPEditorUtils.CreateTranslation("instructionsFlip1", "<JUMP>    - Jump");
+                MFPEditorUtils.CreateTranslation("instructionsFlip2", "Hold <LEFT> or <RIGHT> mid-air    - Flip");
 
                 MFPEditorUtils.CreateTranslation("instructionsWallJump1", "<JUMP> Jump on the wall");
                 MFPEditorUtils.CreateTranslation("instructionsWallJump2", "<JUMP> Jump again");

@@ -24,7 +24,7 @@ namespace MFPClassic
                 if (root.paused || root.dead)
                     yield return null;
 
-                float incrementAmount = Time.deltaTime * 12;
+                float incrementAmount = Time.deltaTime * 12 * root.timescale;
 
                 transform.localScale += new Vector3(incrementAmount, incrementAmount, incrementAmount);
                 yield return null;
